@@ -2,30 +2,37 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    paths: {
+      dest: '../TheButchersMarket/wp-content/themes/BM'
+    },
+
     'cache-busting': {
       options: {
         cleanup: true
       },
       css: {
-        replace: ['build/**/*.html'],
+        replace: ['<%= paths.dest %>/**/*.html'],
         replacement: 'style.css',
-        file: 'build/css/style.css'
+        file: '<%= paths.dest %>/css/style.css'
       },
       scriptsApp: {
         replace: ['build/**/*.html'],
         replacement: 'scripts.js',
-        file: 'build/js/scripts.js'
+        file: '<%= paths.dest %>/js/scripts.js'
       },
       scriptsVendor: {
-        replace: ['build/**/*.html'],
+        replace: ['<%= paths.dest %>/**/*.html'],
         replacement: 'vendor-scripts.js',
-        file: 'build/js/vendor-scripts.js'
+        file: '<%= paths.dest %>/js/vendor-scripts.js'
       }
     },
 
     clean: {
+      options: {
+        force: true // Necessary to delete files outside the current working directory
+      },
       build: {
-        src: ['build/**/*']
+        src: ['<%= paths.dest %>/**/*']
       }
     },
 
@@ -38,7 +45,7 @@ module.exports = function(grunt) {
           'js/app.js',
           'js/app/**/*.js'
         ],
-        dest: 'build/js/scripts.js'
+        dest: '<%= paths.dest %>/js/scripts.js'
       },
       vendor: {
         src: [
@@ -59,36 +66,30 @@ module.exports = function(grunt) {
           'bower_components/bootstrap/js/tab.js',
           'bower_components/bootstrap/js/affix.js'
         ],
-        dest: 'build/js/vendor-scripts.js',
+        dest: '<%= paths.dest %>/js/vendor-scripts.js',
       },
     },
 
     copy: {
       favicon: {
         files: [
-          {expand: true, src: ['favicon.ico', 'apple-touch-icon.png'], dest: 'build'},
+          {expand: true, src: ['favicon.ico', 'apple-touch-icon.png'], dest: '<%= paths.dest %>'},
         ]
       },
       fonts: {
         files: [
-          {expand: true, flatten: true, src: ['bower_components/bootstrap/fonts/*.*'], dest: 'build/fonts'},
-          {expand: true, src: ['fonts/*.*'], dest: 'build'}
-        ]
-      },
-      html: {
-        files: [
-          {expand: true, src: ['index.html'], dest: 'build'},
-          {expand: true, src: ['components/**/*.html'], dest: 'build'}
+          {expand: true, flatten: true, src: ['bower_components/bootstrap/fonts/*.*'], dest: '<%= paths.dest %>/fonts'},
+          {expand: true, src: ['fonts/*.*'], dest: '<%= paths.dest %>'}
         ]
       },
       images: {
         files: [
-          {expand: true, src: ['images/**/*.*'], dest: 'build'}
+          {expand: true, src: ['images/**/*.*'], dest: '<%= paths.dest %>'}
         ]
       },
       php: {
         files: [
-          {expand: true, src: ['*.php', 'partials/**/*.php'], dest: 'build'}
+          {expand: true, src: ['*.php', 'partials/**/*.php'], dest: '<%= paths.dest %>'}
         ]
       }
     },
@@ -133,14 +134,14 @@ module.exports = function(grunt) {
     less: {
       development: {
         src: 'less/style.less',
-        dest: 'build/style.css'
+        dest: '<%= paths.dest %>/style.css'
       },
       production: {
         options: {
           cleancss: true
         },
         src: 'less/style.less',
-        dest: 'build/style.css'
+        dest: '<%= paths.dest %>/style.css'
       }
     },
 
@@ -149,29 +150,22 @@ module.exports = function(grunt) {
         report: 'min'
       },
       app: {
-        src: 'build/js/scripts.js',
-        dest: 'build/js/scripts.js'
+        src: '<%= paths.dest %>/js/scripts.js',
+        dest: '<%= paths.dest %>/js/scripts.js'
       },
       vendor: {
-        src: 'build/js/vendor-scripts.js',
-        dest: 'build/js/vendor-scripts.js'
+        src: '<%= paths.dest %>/js/vendor-scripts.js',
+        dest: '<%= paths.dest %>/js/vendor-scripts.js'
       }
     },
 
     watch: {
       options: {
-        livereload: true,
+        livereload: 35729,
       },
       css: {
         files: 'less/**/*.less',
         tasks: ['less'],
-        options: {
-          spawn: false
-        }
-      },
-      html: {
-        files: ['*.html', 'components/**/*.html'],
-        tasks: ['copy:html'],
         options: {
           spawn: false
         }
@@ -184,7 +178,7 @@ module.exports = function(grunt) {
         }
       },
       php: {
-        files: ['server/**/*.php'],
+        files: ['*.php', 'partials/**/*.php'],
         tasks: ['copy:php'],
         options: {
           spawn: false
